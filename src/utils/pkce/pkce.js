@@ -1,18 +1,24 @@
-const base64URLEncode = (str) => {
-  return str.toString('base64')
-      .replace(/\+/g, '-')
-      .replace(/\//g, '_')
-      .replace(/=/g, '');
+function base64URLEncode(str) {
+  return btoa(String.fromCharCode.apply(null, new Uint8Array(str)))
+      .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+
+function sha256(plain) {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(plain);
+  return window.crypto.subtle.digest('SHA-256', data);
+}
+
+export const generateRandomString = () => {
+  const array = new Uint32Array(28);
+  window.crypto.getRandomValues(array);
+  return Array.from(
+      array,
+      (dec) => ('0' + dec.toString(16)).substr(-2),
+  ).join('');
 };
 
-const sha256 = (buffer) => {
-  return window.crypto.createHash('sha256').update(buffer).digest();
-};
-
-export const getVerifier = () => {
-  return base64URLEncode(window.crypto.getRandomValues(new Uint32Array(10)));
-};
-
-export const getChallenge = (value) => {
-  return base64URLEncode(sha256(value));
-};
+export async function getChallenge(v) {
+  const hashed = await sha256(v);
+  return base64URLEncode(hashed);
+}

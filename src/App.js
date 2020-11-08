@@ -1,18 +1,36 @@
 import React from 'react';
-import {getVerifier, getChallenge} from './utils/pkce/pkce';
+import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import Login from './containers/login/login';
+import Homepage from './containers/homepage/homepage';
+import { generateRandomString } from './utils/pkce/pkce';
 import './App.css';
 
-// const logInUrl = 'https://accounts.spotify.com/authorize?client_id=a7e8d0a4fb0b41f6809e0c27cfe3c0f8&response_type=code&redirect_uri=http://localhost:3000/homepage&code_challenge_method=S256';
+let verifier = localStorage.getItem('verifier');
+
+const generateVerifier = () => {
+  if (!verifier) {
+    verifier = generateRandomString();
+    localStorage.setItem('verifier', verifier);
+  }
+};
+
 
 function App() {
-  const verifier = getVerifier();
-  const challenge = getChallenge(verifier);
-  console.log(verifier, challenge);
+  if (!verifier) {
+    generateVerifier();
+  }
 
   return (
-    <div>
-      <button>Log in</button>
-    </div>
+    <BrowserRouter>
+      <Switch>
+        <Route exact path="/">
+          <Login />
+        </Route>
+        <Route exact path="/homepage">
+          <Homepage />
+        </Route>
+      </Switch>
+    </BrowserRouter>
   );
 }
 
