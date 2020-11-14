@@ -23,6 +23,8 @@ export default function Login() {
     // Hash and base64-urlencode the secret to use as the challenge
     const codeChallenge = await getChallenge(codeVerifier);
 
+    console.log('codeChallenge', codeChallenge);
+
     // Build the authorization URL
     const url = AUTH_ENDPOINT +
     '?response_type=code' +
@@ -34,7 +36,7 @@ export default function Login() {
     '&code_challenge_method=S256';
 
     setUrl(url);
-  });
+  }, []);
 
   const onClickHandler = () => {
     // Redirect to the authorization server

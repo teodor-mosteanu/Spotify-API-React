@@ -19,7 +19,8 @@ function App() {
   if (!verifier) {
     generateVerifier();
   }
-
+// to do:  route , menu
+//  use link
   return (
     <BrowserRouter>
       <Switch>

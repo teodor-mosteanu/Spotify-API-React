@@ -1,6 +1,10 @@
 import React, { useEffect } from 'react';
 import { getToken } from '../../services/tokens/tokens';
+import { getUser } from '../../services/user/user';
 import { REDIRECT_URI } from '../../constants/app';
+
+
+//  to do : display user picture + name
 
 function Homepage() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -10,8 +14,14 @@ function Homepage() {
   const codeVerifier = localStorage.getItem('pkce_code_verifier');
 
   useEffect(async () => {
-    const response = await getToken(code, REDIRECT_URI, codeVerifier);
-    console.log('response', response);
+    const {
+      data: {
+        token_type: tokenType,
+        access_token: accessToken,
+      }} = await getToken(code, REDIRECT_URI, codeVerifier);
+    console.log(tokenType, accessToken);
+    const userData = await getUser(tokenType, accessToken);
+    console.log(userData.data);
   }, []);
 
   return (
